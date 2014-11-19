@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.jboss.qa</groupId>
+	<artifactId>iot-mqtt-client</artifactId>
+	<packaging>bundle</packaging>
+	<version>1.0.0-SNAPSHOT</version>
+
+	<name>A Camel Route for IoT Demo</name>
+	<url>http://www.jboss.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<version.camel>2.12.0.redhat-611412</version.camel>
+		<version.amq>5.9.0.redhat-611412</version.amq>
+		<version.slf4j>1.7.5</version.slf4j>
+		<version.log4j>1.2.17</version.log4j>
+		<version.pi4j>0.0.5</version.pi4j>
+		<version.libbulldog>0.1.0</version.libbulldog>
+	</properties>
+
+	<dependencies>
+		<!-- camel -->
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-core</artifactId>
+			<version>${version.camel}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-spring</artifactId>
+			<version>${version.camel}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-mqtt</artifactId>
+			<version>${version.camel}</version>
+		</dependency>
+		<!-- active-mq -->
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-camel</artifactId>
+			<version>${version.amq}</version>
+		</dependency>
+		
+		<!-- Uncomment whichever ARM library you wish to use -->
+		<!-- 1. pi4j (for Raspberry Pi) -->
+		<dependency>
+			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-core</artifactId>
+			<version>${version.pi4j}</version>
+		</dependency>
+		<!-- 2. libbulldog (for BeagleBoneBlack) -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.bulldog</groupId> -->
+<!-- 			<artifactId>beagleboneblack-hardfp</artifactId> -->
+<!-- 			<version>${version.libbulldog}</version> -->
+<!-- 		</dependency> -->
+		<!-- 3. libbulldog (for CubieBoard) -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.bulldog</groupId> -->
+<!-- 			<artifactId>cubieboard</artifactId> -->
+<!-- 			<version>${version.libbulldog}</version> -->
+<!-- 		</dependency> -->
+		<!-- 4. libbulldog (for Raspberry Pi) -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.bulldog</groupId> -->
+<!-- 			<artifactId>raspberrypi</artifactId> -->
+<!-- 			<version>${version.libbulldog}</version> -->
+<!-- 		</dependency> -->
+		<!-- logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${version.slf4j}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${version.slf4j}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${version.slf4j}</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${version.log4j}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+			<!-- to generate the MANIFEST-FILE of the bundle -->
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.4.0</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>iot-mqtt-client</Bundle-SymbolicName>
+						<Import-Package>*</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+
+			<!-- to run the example using mvn camel:run -->
+			<plugin>
+				<groupId>org.apache.camel</groupId>
+				<artifactId>camel-maven-plugin</artifactId>
+				<version>${version.camel}</version>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- produce executable jar file -->
+	<profiles>
+		<profile>
+			<id>distro</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-shade-plugin</artifactId>
+						<version>2.3</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>shade</goal>
+								</goals>
+								<configuration>
+									<createDependencyReducedPom>false</createDependencyReducedPom>
+									<transformers>
+										<transformer
+											implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+											<mainClass>org.jboss.qa.mqtt.CamelMain</mainClass>
+										</transformer>
+									</transformers>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

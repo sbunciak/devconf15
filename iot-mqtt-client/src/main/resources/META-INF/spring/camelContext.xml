@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:amq="http://activemq.apache.org/schema/core"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+	<bean id="properties" class="org.apache.camel.component.properties.PropertiesComponent">
+		<property name="location" value="classpath:camel.properties" />
+	</bean>
+
+	<bean id="iotBean" class="org.jboss.qa.mqtt.IotBean" />
+	<bean id="iotEventBean" class="org.jboss.qa.mqtt.IotEventBean" />
+
+	<!-- This creates an embedded ActiveMQ Broker -->
+	<broker xmlns="http://activemq.apache.org/schema/core" useJmx="true" persistent="false">
+		<transportConnectors>
+			<transportConnector uri="mqtt://{{localBroker}}:1883" />
+		</transportConnectors>
+	</broker>
+
+	<camelContext trace="false"	xmlns="http://camel.apache.org/schema/spring">
+		<route customId="true" id="consumer-route">
+			<from uri="mqtt://bar?subscribeTopicName=mqtttopic&amp;host=tcp://{{localBroker}}:1883/&amp;qualityOfService=ExactlyOnce" />
+			<to uri="bean:iotBean?method=sayHello" />
+			<log message="The message contains ${body}" />
+		</route>
+		<route customId="true" id="producer-route">
+			<from uri="iotEventBean"/>
+			<log message="The message contains ${body}" />
+			<to uri="mqtt:foo?subscribeTopicName=mqtttopic&amp;host=tcp://{{remoteBroker}}:1883/&amp;userName={{user}}&amp;password={{pwd}}&amp;qualityOfService=ExactlyOnce" />
+		</route>
+	</camelContext>
+
+</beans>
