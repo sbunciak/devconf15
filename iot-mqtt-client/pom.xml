@@ -1,17 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<groupId>org.jboss.qa</groupId>
 	<artifactId>iot-mqtt-client</artifactId>
 	<packaging>bundle</packaging>
 	<version>1.0.0-SNAPSHOT</version>
-
 	<name>A Camel Route for IoT Demo</name>
 	<url>http://www.jboss.org</url>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -22,7 +17,30 @@
 		<version.pi4j>0.0.5</version.pi4j>
 		<version.libbulldog>0.1.0</version.libbulldog>
 	</properties>
-
+	<repositories>
+		<repository>
+			<id>fuse-public</id>
+			<url>http://repository.jboss.org/nexus/content/groups/fs-public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>fuse-public</id>
+			<url>http://repository.jboss.org/nexus/content/groups/fs-public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 	<dependencies>
 		<!-- camel -->
 		<dependency>
@@ -46,7 +64,6 @@
 			<artifactId>activemq-camel</artifactId>
 			<version>${version.amq}</version>
 		</dependency>
-		
 		<!-- Uncomment whichever ARM library you wish to use -->
 		<!-- 1. pi4j (for Raspberry Pi) -->
 		<dependency>
@@ -55,23 +72,23 @@
 			<version>${version.pi4j}</version>
 		</dependency>
 		<!-- 2. libbulldog (for BeagleBoneBlack) -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.bulldog</groupId> -->
-<!-- 			<artifactId>beagleboneblack-hardfp</artifactId> -->
-<!-- 			<version>${version.libbulldog}</version> -->
-<!-- 		</dependency> -->
+		<!-- 		<dependency> -->
+		<!-- 			<groupId>org.bulldog</groupId> -->
+		<!-- 			<artifactId>beagleboneblack-hardfp</artifactId> -->
+		<!-- 			<version>${version.libbulldog}</version> -->
+		<!-- 		</dependency> -->
 		<!-- 3. libbulldog (for CubieBoard) -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.bulldog</groupId> -->
-<!-- 			<artifactId>cubieboard</artifactId> -->
-<!-- 			<version>${version.libbulldog}</version> -->
-<!-- 		</dependency> -->
+		<!-- 		<dependency> -->
+		<!-- 			<groupId>org.bulldog</groupId> -->
+		<!-- 			<artifactId>cubieboard</artifactId> -->
+		<!-- 			<version>${version.libbulldog}</version> -->
+		<!-- 		</dependency> -->
 		<!-- 4. libbulldog (for Raspberry Pi) -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.bulldog</groupId> -->
-<!-- 			<artifactId>raspberrypi</artifactId> -->
-<!-- 			<version>${version.libbulldog}</version> -->
-<!-- 		</dependency> -->
+		<!-- 		<dependency> -->
+		<!-- 			<groupId>org.bulldog</groupId> -->
+		<!-- 			<artifactId>raspberrypi</artifactId> -->
+		<!-- 			<version>${version.libbulldog}</version> -->
+		<!-- 		</dependency> -->
 		<!-- logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -94,7 +111,6 @@
 			<version>${version.log4j}</version>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -114,7 +130,6 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
-
 			<!-- to generate the MANIFEST-FILE of the bundle -->
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -128,7 +143,6 @@
 					</instructions>
 				</configuration>
 			</plugin>
-
 			<!-- to run the example using mvn camel:run -->
 			<plugin>
 				<groupId>org.apache.camel</groupId>
@@ -137,7 +151,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
 	<!-- produce executable jar file -->
 	<profiles>
 		<profile>
@@ -160,8 +173,7 @@
 								<configuration>
 									<createDependencyReducedPom>false</createDependencyReducedPom>
 									<transformers>
-										<transformer
-											implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+										<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 											<mainClass>org.jboss.qa.mqtt.CamelMain</mainClass>
 										</transformer>
 									</transformers>
