@@ -28,7 +28,7 @@
 		<route customId="true" id="producer-route">
 			<from uri="iotEventBean"/>
 			<log message="The message contains ${body}" />
-			<to uri="mqtt:foo?subscribeTopicName=mqtttopic&amp;host=tcp://{{remoteBroker}}:1883/&amp;userName={{user}}&amp;password={{pwd}}&amp;qualityOfService=ExactlyOnce" />
+			<to uri="mqtt:foo?publishTopicName=mqtttopic&amp;host=tcp://{{remoteBroker}}:1883/&amp;userName={{user}}&amp;password={{pwd}}&amp;qualityOfService=ExactlyOnce" />
 		</route>
 	</camelContext>
 
