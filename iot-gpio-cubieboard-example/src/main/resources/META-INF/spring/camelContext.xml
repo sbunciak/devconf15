@@ -3,15 +3,12 @@
 	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-
 	<bean id="iotBean" class="org.jboss.qa.camel.IotBean" />
-
-	<camelContext trace="false"	xmlns="http://camel.apache.org/schema/spring">
+	<camelContext trace="false" xmlns="http://camel.apache.org/schema/spring">
 		<route customId="true" id="consumer-route">
-			<from uri="gpio://cubieboard:ph7" />
-			<to uri="bean:iotBean?method=sayHello" />
-			<log message="The message contains ${body}" />
+			<from uri="gpio://ph7" />
+			<to uri="gpio://pb10" />
+			<log message="The message contains: [${body}]" />
 		</route>
 	</camelContext>
-
 </beans>
