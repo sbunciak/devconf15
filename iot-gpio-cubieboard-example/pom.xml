@@ -59,7 +59,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.pmacik</groupId>
-			<artifactId>camel-gpio-cubieboard</artifactId>
+			<artifactId>camel-gpio</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
