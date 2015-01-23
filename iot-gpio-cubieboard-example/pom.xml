@@ -60,12 +60,17 @@
 		<dependency>
 			<groupId>org.pmacik</groupId>
 			<artifactId>camel-gpio</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
+		<!--dependency>
 			<groupId>org.pmacik</groupId>
 			<artifactId>bulldog-cubieboard</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.1-SNAPSHOT</version>
+		</dependency-->
+		<dependency>
+			<groupId>io.silverspoon</groupId>
+			<artifactId>bulldog-board-cubieboard</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -87,6 +92,12 @@
 			<artifactId>log4j</artifactId>
 			<version>${version.log4j}</version>
 		</dependency>
+<dependency>
+    <groupId>commons-io</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>2.4</version>
+</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>
