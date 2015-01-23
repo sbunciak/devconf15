@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:camel="http://camel.apache.org/schema/spring" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 	<bean id="webCamBean" class="org.jboss.qa.camel.WebCamBean">
 		<property name="picturesDirectory" value="/var/www/pictures"/>
-		<property name="outName" value="xxx"/>
+		<property name="outName" value="picture"/>
 	</bean>
 	<camelContext trace="false" xmlns="http://camel.apache.org/schema/spring">
 		<route customId="true" id="iot-door-route">
