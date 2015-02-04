@@ -1,15 +1,15 @@
 package org.jboss.qa.mqtt;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.cookie.CookiePolicy;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Logger;
+
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.services.client.api.RemoteRestRuntimeEngineFactory;
+import org.kie.services.client.api.command.RemoteRuntimeEngine;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -43,7 +43,7 @@ public class BpmBean {
 
 		username = prop.getProperty("bpmUser", "bpmadmin");
 		password = prop.getProperty("bpmPwd", "admin1admin?");
-		bcUrl = prop.getProperty("bpmUrl", "http://localhost:8080/business-central/rest/");
+		bcUrl = prop.getProperty("bpmUrl", "http://localhost:8080/business-central");
 	}
 
 	/**
@@ -53,74 +53,24 @@ public class BpmBean {
 	* @throws Exception
 	*/
 	public void startProcess(String imageUrl) throws Exception {
-		Map<String, String> params = new HashMap<>();
+		Map<String, Object> params = new HashMap<>();
 		params.put("image", imageUrl);
+		params.put("requester", "http://sbunciak.brq.redhat.com:8080/rest/doorLock");
 
-		String newInstanceUrl = bcUrl + "runtime/" + deploymentId + "/process/" + processId + "/start";
-		log.info("BPMS Instance Url: " + newInstanceUrl);
+		RemoteRestRuntimeEngineFactory remoteRestRuntimeEngineFactory = RemoteRestRuntimeEngineFactory.newBuilder()
+				.addDeploymentId(deploymentId).addUrl(new URL(bcUrl))
+				.addUserName(username).addPassword(password).addTimeout(60).build();
 
-		String dataFromService = getDataFromService(newInstanceUrl, "POST", params, true);
-		log.info("BPMS Server response: " + dataFromService);
-	}
+		RemoteRuntimeEngine engine = remoteRestRuntimeEngineFactory.newRuntimeEngine();
+		// Create KieSession and TaskService instances and use them
+		KieSession ksession = engine.getKieSession();
 
-	private void doAuthorization2(String url, HttpClient httpclient, PostMethod method) {
-		httpclient.getState().setCredentials(
-				new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM),
-				new UsernamePasswordCredentials(username, password)
-				);
-		method.setDoAuthentication(true);
-		httpclient.getParams().setAuthenticationPreemptive(true);
-	}
+		// Each opertion on a KieSession, TaskService or AuditLogService (client) instance
+		// sends a request for the operation to the server side and waits for the response
+		// If something goes wrong on the server side, the client will throw an exception.
+		ProcessInstance processInstance = ksession.startProcess(processId, params);
 
-	private String getDataFromService(String urlpath, String method, Map<String, String> params, boolean multipart) {
-		boolean handleException = false;
-		// extract required parameters
-		String urlStr = urlpath;
-		String result = "";
-		if (urlStr == null) {
-			throw new IllegalArgumentException("Url is a required parameter");
-		}
-		if (method == null || method.trim().length() == 0) {
-			method = "GET";
-		}
-		HttpClient httpclient = new HttpClient();
-		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(3000);
-		httpclient.getHttpConnectionManager().getParams().setSoTimeout(3000);
-		httpclient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-		PostMethod theMethod = null;
-		theMethod = new PostMethod(urlpath);
-		theMethod.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-		doAuthorization2(urlpath, httpclient, theMethod);
-		try {
-			Header[] headers = theMethod.getRequestHeaders();
-			for (Header header : headers) {
-				log.info(header.getName() + ":[" + header.getValue() + "]");
-			}
-			int responseCode = httpclient.executeMethod(theMethod);
-			log.info("Call Restful API again authMethod responseCode:[" + responseCode + "] ");
-			Map<String, Object> results = new HashMap<String, Object>();
-			if (responseCode >= 200 && responseCode < 300) {
-				result = theMethod.getResponseBodyAsString();
-				log.info("Successfully completed :[" + result + "]");
-			} else {
-				if (handleException) {
-					log.info("handleException responseCode:[" + responseCode
-							+ "] theMethod.getResponseBodyAsString():[" + theMethod.getResponseBodyAsString()
-							+ "] urlStr:[" + urlStr + "]");
-				} else {
-					log.info("Unsuccessful responseCode:[" + responseCode
-							+ "] theMethod.getResponseBodyAsString():[" + theMethod.getResponseBodyAsString()
-							+ "] urlStr:[" + urlStr + "]");
-					results.put("StatusMsg",
-							"endpoint " + urlStr + " could not be reached: " + theMethod.getResponseBodyAsString());
-				}
-			}
-			results.put("Status", responseCode);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			theMethod.releaseConnection();
-		}
-		return result;
+		log.info("BPMS Process ID: " + processInstance.getProcessId());
+		log.info("BPMS Server response: " + processInstance);
 	}
 }

@@ -16,6 +16,7 @@
     <version.slf4j>1.7.5</version.slf4j>
     <version.log4j>1.2.17</version.log4j>
     <version.bulldog>0.1.1-SNAPSHOT</version.bulldog>
+    <version.kie>6.1.0.Final</version.kie>
   </properties>
   <repositories>
     <repository>
@@ -57,6 +58,17 @@
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.3.6</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- camel -->
     <dependency>
@@ -121,7 +133,19 @@
       <artifactId>log4j</artifactId>
       <version>${version.log4j}</version>
     </dependency>
+    <dependency>
+      <groupId>org.kie.remote</groupId>
+      <artifactId>kie-services-client</artifactId>
+      <version>${version.kie}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.remote</groupId>
+      <artifactId>kie-services-remote</artifactId>
+      <version>${version.kie}</version>
+    </dependency>
+
   </dependencies>
+
   <build>
     <plugins>
       <plugin>
@@ -141,7 +165,7 @@
           <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
-      
+
       <!-- to run the example using mvn camel:run -->
       <plugin>
         <groupId>org.apache.camel</groupId>
