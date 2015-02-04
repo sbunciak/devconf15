@@ -8,7 +8,7 @@
     <property name="location" value="classpath:rpi.properties" />
   </bean>
 
-  <bean id="tempBean" class="org.jboss.qa.mqtt.TemperatureBean" />
+<!--   <bean id="tempBean" class="org.jboss.qa.mqtt.TemperatureBean" /> -->
   <bean id="bpmBean" class="org.jboss.qa.mqtt.BpmBean" />
 
   <!-- This creates an embedded ActiveMQ Broker -->
@@ -24,12 +24,13 @@
     <rest path="/rest">
       <!-- Open the door -->
       <post uri="/doorLock" consumes="application/json">
-        <to uri="mqtt://iot-demo-door-lock?host=tcp://{{remoteBroker}}:1883&amp;publishTopicName=IotDemoDoorLock" />
+<!--         <to uri="mqtt://iot-demo-door-lock?host=tcp://{{remoteBroker}}:1883&amp;publishTopicName=IotDemoDoorLock" /> -->
+        <to uri="log:org.jboss.qa?level=DEBUG"/>
       </post>
       <!-- Read temperature -->
-      <get uri="/temperature">
-        <to uri="bean:tempBean?method=getTemperature" />
-      </get>
+<!--       <get uri="/temperature"> -->
+<!--         <to uri="bean:tempBean?method=getTemperature" /> -->
+<!--       </get> -->
     </rest>
 
     <!-- BPM process starter -->
