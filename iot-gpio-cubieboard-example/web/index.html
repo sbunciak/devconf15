@@ -1,0 +1,126 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>DevConf 2015 - IoT Demo (MQTT Over WebSockets)</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.responsive.css" rel="stylesheet">
+    <style type="text/css">
+      body { padding-top: 40px; }
+    </style>
+  </head>
+
+  <body>
+    
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">DevConf 2015 - IoT Demo MQTT over WebSockets</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span6">
+          <div id="connect">
+            <div class="page-header">
+              <h2>Server Login</h2>
+            </div>
+            <form class="form-horizontal" id='connect_form'>
+              <fieldset>
+                <div class="control-group">
+                  <label>Host</label>
+                  <div class="controls">
+                    <!-- Local broker (typically a local machine) -->
+                    <input name=host id='connect_host' value='127.0.0.1' type="text">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label>Port</label>
+                  <div class="controls">
+                    <input name=url id='connect_port' value='61614' type="text">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label>Client ID</label>
+                  <div class="controls">
+                    <input id='connect_clientId' placeholder="id" value="example" type="text">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label>User ID</label>
+                  <div class="controls">
+                    <input id='connect_user' placeholder="User ID" value="admin" type="text">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label>Password</label>
+                  <div class="controls">
+                    <input id='connect_password' placeholder="User Password" value="password" type="password">
+                  </div>
+                </div>
+                <!--div class="control-group">
+                  <label>Destination</label>
+                  <div class="controls">
+                    <input id='destination' placeholder="Destination" value="chat/general" type="text">
+                  </div>
+                </div-->
+                <div class="form-actions">
+                  <button id='connect_submit' type="submit" class="btn btn-large btn-primary">Connect</button>
+                </div>
+              </fieldset>
+            </form>
+          </div>
+          <div id="connected" style="display:none">
+            <div class="page-header">
+              <h2>Door (Temperature sensor: <span id="temperature">N/A</span> °C)</h2>
+            </div>
+				<div id="iot-picture-div">
+					<img src="../pictures/picture.jpeg" id="iot-picture"/>
+				</div>
+            <div id="messages">
+            </div>
+            <form class="well form-search" id='send_form'>
+					<button class="btn" type="button" id="disconnect" style="float:right">Disconnect</button>
+					<!--button class="btn" type="button" id="take-picture" style="float:right">Take picture</button-->
+					<button class="btn" type="submit">Open Door Lock</button>
+					<button class="btn" type="button" id="ignore">Ignore</button>
+				</form>
+          </div>
+        </div>
+        <div class="span4">
+          <div class="page-header">
+            <h2>Debug Log</h2>
+          </div>
+          <pre id="debug"></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts placed at the end of the document so the pages load faster -->
+    <script src='js/jquery-1.7.2.min.js'></script>
+	 <script src='js/jquery.timer.js'></script>
+    <script src="js/mqttws31.js"></script>
+    <script src="js/iot-demo.js"></script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-package org.jboss.qa.camel;
+package io.silverspoon.iotdemo.camel;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;

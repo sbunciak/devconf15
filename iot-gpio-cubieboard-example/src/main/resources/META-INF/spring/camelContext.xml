@@ -1,13 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:camel="http://camel.apache.org/schema/spring" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-	<bean id="webCamBean" class="org.jboss.qa.camel.WebCamBean">
+	<bean id="webCamBean" class="io.silverspoon.iotdemo.camel.WebCamBean">
 		<property name="picturesDirectory" value="/var/www/pictures"/>
 		<property name="outName" value="picture"/>
+		<!-- Base URL where taken pictures will be available via HTTP (typically local machine)-->
+		<property name="baseUrl" value="http://127.0.0.1/pictures"/>
 	</bean>
 	<camelContext trace="false" xmlns="http://camel.apache.org/schema/spring">
-		<route customId="true" id="iot-door-route">
+		<!-- The route is triggered by pressing the bell button. The picture from a web camera -->
+		<!-- is taken, saved locally in 'picturesDirectory' (where it should be made available via HTTP), -->
+		<!-- and the HTTP URL of the picture is send via MQQT to both local and remote brokers. The local -->
+		<!-- broker is used by the simple web application and the remote broker is supposed to be used by -->
+		<!-- the IoT Gateway.-->
+		<route customId="true" id="iot-door-bell-route">
 			<from uri="gpio://ph7?value=HIGH" />
 			<to uri="bean:webCamBean?method=getPicture" />
+			<log message="Picture available at ${body}"/>
+			<multicast>
+				<!-- Local Broker (typically local machine)-->
+				<to uri="mqtt://iot-demo-bell?host=tcp://127.0.0.1:1883&amp;publishTopicName=IotDemoDoorBell"/>
+				<!-- Remote Broker (typically different remote machine)-->
+				<to uri="mqtt://iot-demo-bell-sbunciak?host=tcp://127.0.0.1:1883&amp;publishTopicName=doorQueue"/>
+			</multicast>
+		</route>
+		<!-- The route is triggered by a MQTT message recieved by the local broker. A signal is send to the door lock -->
+		<!-- through GPIO to open the door. -->
+		<route customId="true" id="iot-door-lock-route">
+			<!-- Local Broker (typically local machine) -->
+			<from uri="mqtt://iot-demo-lock?host=tcp://127.0.0.1:1883&amp;subscribeTopicName=IotDemoDoorLock"/>
 			<to uri="gpio://pb10?value=HIGH"/>
 			<to uri="gpio://pb10?value=LOW"/>
 		</route>

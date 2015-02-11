@@ -1,0 +1,2 @@
+A simple web application to controll the door lock. It uses PAHO (https://eclipse.org/paho/) JavaScript Client to exchange MQTT messages with a local MQTT broker.
+It requires to be run by a web browser supporting WebSockets.
